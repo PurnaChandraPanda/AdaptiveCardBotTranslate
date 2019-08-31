@@ -1,56 +1,38 @@
 ﻿# Multilingual Bot
 
-Bot Framework v4 multilingual bot - adaptive card translation sample
+Bot Framework v3 multilingual bot - adaptive card translation sample
 
 This bot has been created using [Bot Framework](https://dev.botframework.com), it shows how to translate incoming and outgoing text using a custom middleware and the [Microsoft Translator Text API](https://docs.microsoft.com/en-us/azure/cognitive-services/translator/).
 
 ## Concepts introduced in this sample
 
-Translation Middleware: We create a translation middleware that can translate text from bot to user and from user to bot, allowing the creation of multi-lingual bots. The whole adaptive card translation logic is discussed [here](https://github.com/PurnaChandraPanda/AdaptiveCardBotTranslate/blob/master/v4/multilingual-bot/Translation/MicrosoftTranslator.cs#L63).
-
-The middleware is driven by user state. This means that users can specify their language preference, and the middleware automatically will intercept messages back and forth and present them to the user in their preferred language.
-
-Users can change their language preference anytime, and since this gets written to the user state, the middleware will read this state and instantly modify its behavior to honor the newly selected preferred language.
+The message is first received by RootDialog, and from there the logic just got propagated to custom API [TranslateAdaptiveCardAsync](https://github.com/PurnaChandraPanda/AdaptiveCardBotTranslate/blob/master/v3/AdaptiveTranslatedBot/AdaptiveTranslate/Dialogs/RootDialog.cs#L212), which actually helped in translation adaptive card content/ attachment.
 
 The [Microsoft Translator Text API](https://docs.microsoft.com/en-us/azure/cognitive-services/translator/), Microsoft Translator Text API is a cloud-based machine translation service. With this API you can translate text in near real-time from any app or service through a simple REST API call.
 The API uses the most modern neural machine translation technology, as well as offering statistical machine translation technology.
 
 ## Prerequisites
 
-- [.NET Core SDK](https://dotnet.microsoft.com/download) version 2.2
-
-  ```bash
-  # determine dotnet version
-  dotnet --version
-  ```
+- [.NET Framework SDK](https://dotnet.microsoft.com/download) version 4.7.2
 
 - [Microsoft Translator Text API key](https://docs.microsoft.com/en-us/azure/cognitive-services/translator/translator-text-how-to-signup)
 
     To consume the Microsoft Translator Text API, first obtain a key following the instructions in the [Microsoft Translator Text API documentation](https://docs.microsoft.com/en-us/azure/cognitive-services/translator/translator-text-how-to-signup).
 
-    Paste the key in the `TranslatorKey` setting in the `appsettings.json` file, or use your preferred configuration and update the following line in `Translation/MicrosoftTranslator.cs` with your translation key:
+    Paste the key in the `TranslatorKey` setting in the `web.config` file.
 
 
 ## To try this sample
 
 - Clone the repository
 
-- In a terminal, navigate to the v4 project directory.
-- Run the bot from a terminal or from Visual Studio, choose option A or B.
-
-  A) From a terminal
-
-  ```bash
-  # run the bot
-  dotnet run
-  ```
-
-  B) Or from Visual Studio
+- In a terminal, navigate to the v3 project directory
+- Run the bot from Visual Studio.
 
   - Launch Visual Studio
   - File -> Open -> Project/Solution
-  - Navigate to `v4\multilingual-bot` folder
-  - Select `MultiLingualBot.sln` file
+  - Navigate to `v3\AdaptiveTranslatedBot` folder
+  - Select `AdaptiveTranslatedBot.sln` file
   - Press `F5` to run the project
 
 ## Testing the bot using Bot Framework Emulator
@@ -65,19 +47,18 @@ The API uses the most modern neural machine translation technology, as well as o
 - File -> Open Bot
 - Enter a Bot URL of `http://localhost:3978/api/messages`
 
-### Creating a custom middleware
+### Conversion logic
 
-Translation Middleware: We create a translation middleware than can translate text from bot to user and from user to bot, allowing the creation of multilingual bots.
-Users can specify their language preference, which is stored in the user state. The translation middleware translates to and from the user's preferred language.
+It's being hard-coded to `fr` converting locale - [here](https://github.com/PurnaChandraPanda/AdaptiveCardBotTranslate/blob/master/v3/AdaptiveTranslatedBot/AdaptiveTranslate/Dialogs/RootDialog.cs#L208). However, it can always be optimized and make more dynamic.
 
 ### Microsoft Translator Text API
 
 The [Microsoft Translator Text API](https://docs.microsoft.com/en-us/azure/cognitive-services/translator/), Microsoft Translator Text API is a cloud-based machine translation service. With this API you can translate text in near real-time from any app or service through a simple REST API call.
 The API uses the most modern neural machine translation technology, as well as offering statistical machine translation technology.
 
-### Add `TranslatorKey` to Application Settings
+### Add `trns:APIKey` to Application Settings
 
-If you used the `appsettings.json` file to store your `TranslatorKey` then you'll need to add this key and its value to the Application Settings for your deployed bot.
+If you used the `web.config` file to store your `trns:APIKey` then you'll need to add this key and its value to the Application Settings for your deployed bot.
 
 - Log into the [Azure portal](https://portal.azure.com)
 - In the left nav, click on `Bot Services`
@@ -85,5 +66,5 @@ If you used the `appsettings.json` file to store your `TranslatorKey` then you'l
 - Click the `Application Settings`
 - Scroll to the `Application settings` section
 - Click `+ Add new setting`
-- Add the key `TranslatorKey` with a value of the Translator Text API `Authentication key` created from the steps above
+- Add the key `trns:APIKey` with a value of the Translator Text API `Authentication key` created from the steps above
 
